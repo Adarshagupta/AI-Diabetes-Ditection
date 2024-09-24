@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Diabetes Risk Chatbot</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background-color: #f0f0f0; }
+        #chat-container { border: 1px solid #ccc; height: 400px; overflow-y: scroll; padding: 10px; margin-bottom: 10px; background-color: white; border-radius: 5px; }
+        #user-input { width: 70%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+        #send-btn { padding: 10px 20px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        #send-btn:hover { background-color: #45a049; }
+        .bot-message { background-color: #e1f5fe; padding: 5px 10px; border-radius: 10px; margin-bottom: 10px; }
+        .user-message { background-color: #e8f5e9; padding: 5px 10px; border-radius: 10px; margin-bottom: 10px; text-align: right; }
+        #progress-bar { width: 100%; background-color: #ddd; }
+        #progress { height: 30px; background-color: #4CAF50; text-align: center; line-height: 30px; color: white; }
+    </style>
+</head>
+<body>
+    <h1>Advanced Diabetes Risk Chatbot</h1>
+    <div id="progress-bar">
+        <div id="progress" style="width: 0%">0%</div>
+    </div>
+    <div id="chat-container"></div>
+    <input type="text" id="user-input" placeholder="Enter your message...">
+    <button id="send-btn">Send</button>
+
+    <script>
+        const features = {{ features|tojson }};
+        const prompts = {{ prompts|tojson }};
+        let currentFeature = 0;
+        const inputData = {};
+
+        function addMessage(sender, message) {
+            const messageClass = sender === "Bot" ? "bot-message" : "user-message";
+            $("#chat-container").append(`<div class="${messageClass}"><strong>${sender}:</strong> ${message}</div>`);
+            $("#chat-container").scrollTop($("#chat-container")[0].scrollHeight);
+        }
+
+        function validateInput(input, type, min, max, format) {
+            switch (type) {
+                case 'int':
+                    const intValue = parseInt(input);
+                    return !isNaN(intValue) && intValue >= min && intValue <= max;
+                case 'float':
+                    const floatValue = parseFloat(input);
+                    return !isNaN(floatValue) && floatValue >= min && floatValue <= max;
+                case 'bool':
+                    return ['yes', 'no'].includes(input.toLowerCase());
+                case 'str':
+                    if (format) {
+                        const regex = new RegExp(format);
+                        return regex.test(input);
+                    }
+                    return input.trim() !== '';
+                default:
+                    return true;
+            }
+        }
+        
+
+        function askForNextFeature() {
+            if (currentFeature < features.length) {
+                const feature = features[currentFeature];
+                const prompt = prompts[feature];
+                addMessage("Bot", prompt.question);
+                addMessage("Bot", `(Type 'explain' to learn more about ${feature})`);
+            } else {
+                addMessage("Bot", "Thank you for providing all the information. I'll now analyze your risk of diabetes.");
+                submitData();
+            }
+            updateProgressBar();
+        }
+
+        function updateProgressBar() {
+            const progress = (currentFeature / features.length) * 100;
+            $("#progress").css("width", `${progress}%`);
+            $("#progress").text(`${Math.round(progress)}%`);
+        }
+
+        function submitData() {
+            $.ajax({
+                url: '/predict',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(inputData),
+                success: function(response) {
+                    addMessage("Bot", response.response.replace(/\n/g, '<br>'));
+                    currentFeature = 0;
+                    addMessage("Bot", "Would you like to check again? (yes/no)");
+                },
+                error: function(xhr, status, error) {
+                    addMessage("Bot", "An error occurred while processing your data. Please try again.");
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        function explainFactor(factor) {
+            $.ajax({
+                url: '/explain',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({factor: factor}),
+                success: function(response) {
+                    addMessage("Bot", response.explanation);
+                    addMessage("Bot", prompts[factor].question);
+                },
+                error: function(xhr, status, error) {
+                    addMessage("Bot", "An error occurred while fetching the explanation. Please try again.");
+                    console.error("Error:", error);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            addMessage("Bot", "Hello! I'm an advanced diabetes risk assessment chatbot. I'll ask you a series of questions to evaluate your risk. Let's get started!");
+            askForNextFeature();
+
+            $("#send-btn").click(function() {
+                const userInput = $("#user-input").val().trim();
+                if (userInput) {
+                    addMessage("You", userInput);
+                    $("#user-input").val("");
+
+                    if (currentFeature < features.length) {
+                        const currentPrompt = prompts[features[currentFeature]];
+                        if (userInput.toLowerCase() === 'explain') {
+                            explainFactor(features[currentFeature]);
+                        } else if (validateInput(userInput, currentPrompt.type, currentPrompt.min, currentPrompt.max, currentPrompt.format)) {
+                            inputData[features[currentFeature]] = userInput;
+                            currentFeature++;
+                            askForNextFeature();
+                        } else {
+                            addMessage("Bot", "Invalid input. Please provide a valid answer based on the question.");
+                        }
+                    } else if (userInput.toLowerCase() === "yes") {
+                        inputData = {};
+                        currentFeature = 0;
+                        askForNextFeature();
+                    } else if (userInput.toLowerCase() === "no") {
+                        addMessage("Bot", "Thank you for using the Advanced Diabetes Risk Chatbot. Take care and stay healthy!");
+                    }
+                }
+            });
+
+            $("#user-input").keypress(function(e) {
+                if (e.which == 13) {
+                    $("#send-btn").click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

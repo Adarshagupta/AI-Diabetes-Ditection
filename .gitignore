@@ -1,0 +1,34 @@
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+venv/
+env/
+
+# IDE specific files
+.vscode/
+.idea/
+
+# Flask session files
+flask_session/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Dataset file
+
+diabetes_dataset00.csv
+
+# Trained model file
+diabetes_model.joblib
+
+# Environment variables
+.env
+
+# Log files
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
