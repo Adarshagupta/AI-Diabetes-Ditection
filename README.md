@@ -29,55 +29,82 @@ This project implements an advanced chatbot that assesses a user's risk of diabe
 - `diabetes_dataset00.csv`: Dataset for training the model (not included in repository)
 - `diabetes_model.joblib`: Saved machine learning model (generated after running the app)
 
-## Setup and Installation
+
+## 🚀 Setup and Installation
+
 1. Clone the repository:
-   ```
-   git clone <repository-url>
-   cd advanced-diabetes-risk-chatbot
+   ```bash
+   git clone https://github.com/Adarshagupta/AI-Diabetes-Ditection.git
+   cd AI-Diabetes-Ditection
    ```
 
-2. Create a virtual environment and activate it:
-   ```
+2. Create and activate a virtual environment:
+   ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
    ```
 
 3. Install the required dependencies:
-   ```
+   ```bash
    pip install -r requirements.txt
    ```
 
-4. Ensure you have the `diabetes_dataset00.csv` file in the project root directory.
+4. Download the dataset:
+   - Visit this link: [https://drive.google.com/file/d/1cI1d4fMrUjDFO_CRR29pXmOfNbfMSnRB/view?usp=sharing](https://drive.google.com/file/d/1cI1d4fMrUjDFO_CRR29pXmOfNbfMSnRB/view?usp=sharing)
+   - Download the `diabetes_dataset00.csv` file
+   - Place the downloaded file in the project root directory
 
 5. Run the Flask application:
-   ```
+   ```bash
    python app.py
    ```
 
 6. Open a web browser and navigate to `http://127.0.0.1:5000/` to use the chatbot.
 
-## Usage
-1. The chatbot will greet you and start asking questions about your health and lifestyle.
-2. Answer each question accurately. The chatbot will validate your inputs.
-3. After answering all questions, the chatbot will provide a risk assessment and recommendations.
-4. You can choose to check again or end the conversation.
+## 🖥️ Usage
 
-## Model Information
-- The project uses a Random Forest Classifier for risk prediction.
-- Features include age, BMI, blood pressure, glucose tolerance, family history, physical activity, dietary habits, and more.
-- The model is trained on the `diabetes_dataset00.csv` file (not included in the repository due to data privacy).
+1. The chatbot greets you and starts asking questions about your health and lifestyle.
+2. Answer each question accurately. The chatbot validates your inputs.
+3. You can type 'explain' at any time to get more information about a specific factor.
+4. After answering all questions, the chatbot provides a risk assessment and recommendations.
+5. You can choose to check again or end the conversation.
 
-## Future Improvements
-- Implement user authentication for saving and retrieving past assessments
-- Add more detailed explanations for each risk factor
-- Integrate with wearable devices for automatic data collection
-- Expand the model to cover more health conditions
+## 🧠 Model Information
 
-## Contributors
-- [Your Name]
+- Uses a Random Forest Classifier for risk prediction
+- Features include age, BMI, blood pressure, glucose tolerance, family history, physical activity, dietary habits, and more
+- Trained on the `diabetes_dataset00.csv` file (downloaded separately due to size constraints)
+- Provides feature importance for top factors influencing the prediction
 
-## License
-This project is licensed under the MIT License - see the LICENSE file for details.
+## 🚧 Future Improvements
 
-## Disclaimer
-This chatbot is for educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
+- [ ] Implement user authentication for saving and retrieving past assessments
+- [ ] Add more detailed visualizations of risk factors
+- [ ] Integrate with wearable devices for automatic data collection
+- [ ] Expand the model to cover more health conditions
+- [ ] Implement a mobile app version of the chatbot
+- [ ] Add multi-language support
+
+## 👥 Contributors
+
+- [Adarsha Gupta](https://github.com/Adarshagupta)
+
+We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
+
+This chatbot is for educational purposes only and should not be used as a substitute for professional medical advice, diagnosis, or treatment. Always consult with a qualified healthcare provider for medical concerns.
+
+## 🙏 Acknowledgements
+
+- [Flask Documentation](https://flask.palletsprojects.com/)
+- [scikit-learn Documentation](https://scikit-learn.org/stable/)
+- [Diabetes Dataset Source](https://drive.google.com/file/d/1cI1d4fMrUjDFO_CRR29pXmOfNbfMSnRB/view?usp=sharing)
+
+---
+
+Made with ❤️ by [Adarsha Gupta](https://github.com/Adarshagupta)
